@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interactive Closure Letter</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@300;400;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.5.3/lottie_svg.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@300;400;500;700&display=swap');
+
+  body {
+    font-family: 'Roboto', sans-serif;
+    background: linear-gradient(135deg, #ffddf4, #ffe6e9);
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    overflow: hidden;
+    transition: background 0.5s ease;
+  }
+  body.dark-mode {
+    background: linear-gradient(135deg, #2c3e50, #4ca1af);
+    color: #fff;
+  }
+  .letter-container {
+    max-width: 700px;
+    padding: 40px;
+    background: #fff;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    text-align: left;
+    position: relative;
+    transition: transform 0.5s ease-in-out, box-shadow 0.5s ease-in-out;
+    background: linear-gradient(to bottom, #fff9f9, #ffe6e6);
+    border: 2px solid #ffcce7;
+    overflow-y: auto;
+    max-height: 80vh;
+    font-family: 'Great Vibes', serif;
+    font-size: 20
+    px; /* Increased font size for clarity */
+    
+    /* New properties for 3D paper effect */
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.1);
+    transform: rotate(-3deg);
+    position: relative;
+    z-index: 1;
+}
+
+  .letter-container:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+  }
+  .letter-header {
+    margin-bottom: 20px;
+    color: #ff69b4;
+    font-family: 'Great Vibes', cursive;
+    font-size: 36px;
+    text-align: center;
+    position: relative;
+  }
+  .letter-header::before,
+  .letter-header::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 50px;
+    height: 2px;
+    background-color: #ff69b4;
+  }
+  .letter-header::before {
+    left: -60px;
+  }
+  .letter-header::after {
+    right: -60px;
+  }
+  .letter-header i {
+    margin: 0 15px;
+  }
+  .typing-container {
+    white-space: pre-wrap;
+    text-align: justify;
+    font-size: 24px;
+    line-height: 1.8;
+    padding: 20px;
+    background-color: #fff0f6;
+    border-radius: 10px;
+    box-shadow: inset 0 4px 10px rgba(0, 0, 0, 0.05);
+    margin-top: 20px;
+    position: relative;
+    border: 1px solid #ff69b4;
+    overflow: hidden;
+  }
+  .typing-container::before,
+  .typing-container::after {
+    content: '';
+    position: absolute;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background-color: #ff69b4;
+    opacity: 0.3;
+  }
+  .typing-container::before {
+    top: -10px;
+    left: -10px;
+  }
+  .typing-container::after {
+    bottom: -10px;
+    right: -10px;
+  }
+  .action-button, .print-button, .dark-mode-button, .download-button {
+    display: inline-block;
+    padding: 12px 20px;
+    background-color: #ff69b4;
+    color: #fff;
+    border: none;
+    border-radius: 30px;
+    font-size: 18px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin: 10px 5px 0 5px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+  }
+  .action-button::before, .print-button::before, .dark-mode-button::before, .download-button::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 300%;
+    height: 300%;
+    background-color: rgba(255,255,255,0.3);
+    border-radius: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    transition: transform 0.5s ease;
+  }
+  .action-button:hover::before, .print-button:hover::before, .dark-mode-button:hover::before, .download-button:hover::before {
+    transform: translate(-50%, -50%) scale(1);
+  }
+  .action-button:hover, .print-button:hover, .dark-mode-button:hover, .download-button:hover {
+    background-color: #ff1493;
+    transform: translateY(-5px);
+  }
+  #speedControl {
+    width: 150px;
+    margin-top: 20px;
+    margin-left: 10px;
+  }
+  #speedIcon {
+    font-size: 12px;
+    margin-left: 5px;
+  }
+  canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    z-index: 1;
+  }
+  .decorative-top-left, .decorative-bottom-right {
+    position: absolute;
+    font-size: 24px;
+    color: rgba(255, 105, 180, 0.3);
+  }
+  .decorative-top-left {
+    top: 10px;
+    left: 10px;
+  }
+  .decorative-bottom-right {
+    bottom: 10px;
+    right: 10px;
+  }
+  @media (max-width: 768px) {
+    body {
+      padding: 20px;
+    }
+    .letter-container {
+      padding: 20px;
+      max-height: 70vh;
+    }
+    .letter-header {
+      font-size: 24px;
+    }
+    .typing-container {
+      font-size: 16px;
+    }
+    .action-button, .print-button, .dark-mode-button, .download-button {
+      padding: 10px 15px;
+      font-size: 16px;
+      margin-top: 5px;
+    }
+    #speedControl {
+      width:100px;
+    }
+    #speedIcon {
+      font-size: 10px;
+    }
+  }
+
+  /* CSS for the range input */
+  input[type="range"] {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 10px;
+    background: #ccc;
+    border-radius: 5px;
+    outline: none;
+    margin-left: 10px;
+  }
+
+  /* CSS for the slider thumb */
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background: #ff69b4;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+  #confettiCanvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    z-index: 0; /* Update z-index to send canvas behind the letter container */
+}
+.music-container{
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 450px;
+    z-index: 1;
+    transition: all 0.75s cubic-bezier(0.075, 0.82, 0.165, 1);
+  }
+
+  .player{
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    width: 100%;
+    height: 70px;
+  }
+
+  .track-info{
+    position: absolute;
+    top: 0;
+    left: -.3rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+    transition: all .25s ease;
+  }
+
+  .trackname{
+    font-size: 1.5rem;
+    font-weight: bold;
+    pointer-events: none;
+  }
+  .trackartist{
+    font-size: .8rem;
+    pointer-events: none;
+  }
+  .track-nav{
+    gap: .2rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    transition: all .25s ease;
+  }
+
+  .music-container.hide {
+    width: 140px;
+  }
+
+  .music-container.hide .track-info,
+  .music-container.hide .track-nav {
+    transition: all 0s ease;
+    opacity: 0;
+  }
+
+  .toggle-player{
+    position: absolute;
+    right: -1rem;
+    top: -1rem;
+    width: 2rem;
+    z-index: 2;
+    border-radius: 100%;
+    cursor: pointer;
+  }
+
+  .sound-bars-lottie{
+    position: absolute;
+    top: 1.1rem;
+    left: 4.5rem;
+  }
+  .sound-bars{
+    width: 100%;
+    width: 60px;
+    height: 60px;
+  }
+  .prev-track, .playpause-track, .next-track{
+    cursor: pointer;
+    z-index: 100;
+    border-radius: 100%;
+    padding: .3rem;
+  }
+
+  .prev-track:hover, .playpause-track:hover, .next-track:hover{
+    background-color: rgb(190, 190, 190);
+    transition-duration: .5s;
+  }
+
+</style>
+</head>
+<body>
+
+  <div class="letter-container" id="letterContainer" aria-live="polite">
+    <div class="letter-header">
+      <i class="fas fa-heart"></i> A Letter   <i class="fas fa-heart"></i>
+    </div>
+    <div class="typing-container" id="typing-container"></div>
+    <div class="decorative-top-left"><i class="fas fa-heart"></i></div>
+    <div class="decorative-bottom-right"><i class="fas fa-heart"></i></div>
+    <div style="text-align: center; margin-top: 20px;">
+      <label for="speedControl">Typing Speed: </label>
+      <input type="range" id="speedControl" name="speedControl" min="10" max="200" value="50" oninput="adjustSpeed(this.value)">
+      <i class="fas fa-tachometer-alt" id="speedIcon"></i>
+      <button class="action-button" onclick="pauseTyping()">Pause</button>
+      <button class="action-button" onclick="resumeTyping()">Resume</button>
+    </div>
+  </div>
+  <div class="fixed left-6 bottom-6 z-10">
+    <div class="music-container relative bg-neutral-100 py-3 px-3 border-2 z-10 rounded-md border-black flex items-center">
+        <div class="toggle-player bg-neutral-100 border-2 border-black">
+            <img class="w-full" src="icons/close.svg" alt="">
+        </div>
+        <div class="avatar absolute w-14">
+            <img class="w-full border-2 bg-white border-black rounded-md" src="icons/pinkheart.svg" alt="">
+        </div>
+        <div class="player">
+            <div class="sound-bars-lottie">
+                <div class="sound-bars"></div>
+            </div>
+            <div class="track-info -space-y-1">
+                <div class="trackname">Only</div>
+                <div class="trackartist">Track Artist</div>
+            </div>
+            <div class="track-nav">
+                <div class="prev-track">
+                    <img class="w-7" src="icons/backplayer.svg" alt="">
+                </div>
+                <div class="playpause-track">
+                    <img class="w-8" src="icons/play.svg" alt="">
+                </div>
+                <div class="next-track">
+                    <img class="w-7" style="transform: rotate(180deg);" src="icons/backplayer.svg" alt="">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+  
+<canvas id="confettiCanvas"></canvas>
+
+<script>
+  var closureLetter = `Dear Kye,
+
+  I hope this letter finds you well. It has been a while since we last spoke, and I have been reflecting on our friendship during this time apart. I want to express my feelings and thoughts to you in this letter, as a means of closure and understanding.
+
+  Your friendship has meant a lot to me, and I cherish the memories we shared together. From our late-night conversations to our adventures, you have been a significant part of my life. I value the laughter, the support, and the bond we had, and I will always hold those memories close to my heart.
+
+  However, I have also noticed a shift in our relationship over the past few months. It seems like we have grown apart, and I understand that friendships evolve and change over time. Despite my efforts to reach out, I have felt a distance between us, and it has left me feeling uncertain and saddened by the silence.
+
+  I want you to know that I hold no ill will or resentment towards you. I respect your decisions and choices, and I understand that life can get busy and priorities can change. If there is anything I have done to contribute to this distance, I apologize, and I hope we can address any misunderstandings or concerns together.
+
+  As I write this letter, I realize that sometimes friendships come to an end, and it is okay to acknowledge that change. While it saddens me to think about the possibility of our friendship drifting apart, I also believe in the power of closure and moving forward with grace and understanding.
+
+I want to thank you for the friendship we shared and the moments we had together. You have brought joy and laughter into my life, and I will always be grateful for our time together. I wish you nothing but happiness and fulfillment in your journey ahead.
+
+With heartfelt regards,
+Renz`;
+
+var letterIndex = 0;
+var typingSpeed = 50; // Default typing speed
+var typingPaused = false;
+var isTyping = true;
+var audio = new Audio('typing-sound.mp3'); // Add path to your sound file
+
+function typeLetter() {
+if (!typingPaused) {
+var typingContainer = document.getElementById('typing-container');
+if (letterIndex < closureLetter.length) {
+typingContainer.innerHTML += closureLetter.charAt(letterIndex);
+letterIndex++;
+if (!typingPaused) {
+audio.play();
+}
+setTimeout(typeLetter, typingSpeed); // Use the adjusted typing speed
+window.scrollTo(0, document.body.scrollHeight);
+} else {
+isTyping = false;
+startConfetti();
+}
+}
+}
+
+function adjustSpeed(value) {
+typingSpeed = value;
+}
+
+function pauseTyping() {
+typingPaused = true;
+audio.pause();
+}
+
+function resumeTyping() {
+if (typingPaused) {
+typingPaused = false;
+audio.play();
+typeLetter();
+}
+}
+
+function startConfetti() {
+var confettiCanvas = document.getElementById('confettiCanvas');
+confettiCanvas.width = window.innerWidth;
+confettiCanvas.height = window.innerHeight;
+var ctx = confettiCanvas.getContext('2d');
+var particles = [];
+for (var i = 0; i < 100; i++) {
+particles.push({
+x: Math.random() * confettiCanvas.width,
+y: Math.random() * confettiCanvas.height,
+r: Math.random() * 4 + 1,
+d: Math.random() * confettiCanvas.width,
+color: "rgba(" + Math.floor(Math.random() * 255) + "," +
+Math.floor(Math.random() * 255) + "," + Math.floor(Math.random() * 255) + ", 0.8)",
+tilt: Math.floor(Math.random() * 5) - 5,
+tiltAngleIncremental: (Math.random() * 0.07) + 0.05,
+tiltAngle: 0
+});
+}
+
+function draw() {
+ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+for (var i = 0; i < particles.length; i++) {
+var p = particles[i];
+ctx.beginPath();
+ctx.lineWidth = p.r;
+ctx.strokeStyle = p.color;
+ctx.moveTo(p.x + p.tilt + (p.r / 2), p.y);
+ctx.lineTo(p.x + p.tilt, p.y + p.tilt + (p.r / 2));
+ctx.stroke();
+}
+update();
+}
+
+function update() {
+for (var i = 0; i < particles.length; i++) {
+var p = particles[i];
+p.tiltAngle += p.tiltAngleIncremental;
+p.y += (Math.cos(0.001 + p.d) + 1 + p.r / 2) / 2;
+p.tilt = Math.sin(p.tiltAngle - (i / 3)) * 15;
+if (p.y > confettiCanvas.height) {
+p.x
+= Math.random() * confettiCanvas.width;
+p.y = -10;
+}
+}
+}
+
+setInterval(draw, 20);
+}
+
+function printLetter() {
+window.print();
+}
+
+function downloadPDF() {
+const element = document.getElementById('letterContainer');
+html2pdf().from(element).save('ClosureLetter.pdf');
+}
+
+function toggleDarkMode() {
+document.body.classList.toggle('dark-mode');
+}
+
+window.onload = function() {
+typeLetter();
+};
+
+let musicPlayer = document.querySelector(".music-container");
+let togglePlayer = document.querySelector(".toggle-player");
+
+let trackInfo = document.querySelector(".track-info");
+let trackName = document.querySelector(".trackname");
+let trackArtist = document.querySelector(".trackartist");
+let trackNav = document.querySelector(".track-nav");
+
+let playPauseBtn = document.querySelector(".playpause-track");
+let nextBtn = document.querySelector(".next-track");
+let prevBtn = document.querySelector(".prev-track");
+
+let trackIndex = 0;
+let isPlaying = false;
+let isHidden = true;
+
+let currentTrack = document.createElement("audio");
+let soundBars = document.querySelector(".sound-bars");
+
+togglePlayer.addEventListener("click", function() {
+    isHidden = !isHidden;
+    if(isHidden){
+        musicPlayer.classList.remove("hide");
+        togglePlayer.innerHTML = '<img class="w-[98%]" src="icons/close.svg">';
+        trackInfo.style.transitionDelay = "0.4s";
+        trackNav.style.transitionDelay = "0.4s";
+    } else {
+        musicPlayer.classList.add("hide");
+        togglePlayer.innerHTML = '<img class="w-full" src="icons/plus.svg">';
+        trackInfo.style.transitionDelay = "0s";
+        trackNav.style.transitionDelay = "0s";
+    }
+});
+
+let soundBarsLottie = bodymovin.loadAnimation({
+    container: soundBars,
+    renderer: "svg",
+    loop: true,
+    autoPLay: false,
+    path: "https://lottie.host/9ec12a7e-e429-453a-9f22-a2af1dcb4dca/2zeuy4rwtP.json",
+});
+
+
+let trackList = [
+    {
+        name: "Only",
+        artist: "Lee Hi",
+        path: "./music/only.mp3",
+    },
+    {
+        name: "Day & Night",
+        artist: "Jung Seung Hwan",
+        path: "./music/day and night.mp3",
+    },
+    {
+        name: "Love of my Life",
+        artist: "Reyne",
+        path: "./music/love of my life.mp3",
+    },
+    {
+        name: "The Only One",
+        artist: "Reyne",
+        path: "./music/the only one.mp3",
+    },
+];
+
+// EVENT LISTENERS
+playPauseBtn.addEventListener("click", playPauseTrack);
+nextBtn.addEventListener("click", nextTrack);
+prevBtn.addEventListener("click", prevTrack);
+
+function loadTrack(trackIndex){
+    currentTrack.src = trackList[trackIndex].path;
+    trackName.textContent = trackList[trackIndex].name;
+    trackArtist.textContent = trackList[trackIndex].artist;
+    currentTrack.addEventListener("ended", nextTrack);
+    currentTrack.load();
+}
+
+loadTrack(trackIndex);
+
+function playPauseTrack(){
+    if(isPlaying == false){
+        playTrack();
+    }else{
+        pauseTrack();
+    }
+}
+
+function playTrack(){
+    currentTrack.play();
+    isPlaying = true;
+    playPauseBtn.innerHTML = '<img class="w-8" src="icons/pause.svg">';
+    soundBarsLottie.play();
+}
+
+function pauseTrack(){
+    currentTrack.pause();
+    isPlaying = false;
+    playPauseBtn.innerHTML = '<img class="w-8" src="icons/play.svg">';
+    soundBarsLottie.stop();
+}
+
+function nextTrack(){
+    if(trackIndex < trackList.length - 1){
+        trackIndex += 1;
+        loadTrack(trackIndex);
+        playTrack();
+    }else{
+        trackIndex = 0;
+        loadTrack(trackIndex);
+        playTrack();
+    } 
+}
+
+function prevTrack(){
+    if(trackIndex > 0){
+        trackIndex -= 1;
+        loadTrack(trackIndex);
+        playTrack();
+    }else{
+        trackIndex = trackList.length - 1;
+        loadTrack(trackIndex);
+        playTrack();
+    }
+}
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+</body>
+</html>

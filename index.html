@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Heartfelt Closure Letter</title>
+<style>
+  body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f3f3f3;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    text-align: center;
+  }
+  .intro-container {
+    max-width: 600px;
+    margin: auto;
+    padding: 20px;
+    background-color: #ffffff;
+    border: 1px solid #dddddd;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+  .intro-container.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .intro-heading {
+    font-size: 36px;
+    color: #ff69b4;
+    margin-bottom: 20px;
+    opacity: 0;
+    transform: translateY(-20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+  .intro-container.show .intro-heading {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .intro-text {
+    font-size: 18px;
+    line-height: 1.6;
+    margin-bottom: 30px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+  .intro-container.show .intro-text {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .intro-button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #ff69b4;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+  .intro-container.show .intro-button {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .intro-button:hover {
+    background-color: #ff1493;
+  }
+</style>
+</head>
+<body>
+
+<div class="intro-container">
+  <h1 class="intro-heading">Open Your Heart to a Special Message</h1>
+  <p class="intro-text">Someone dear to you has poured their emotions into a heartfelt letter. Take a moment to embrace their words of closure and understanding.</p>
+  <!-- Link to the letter page -->
+  <a href="letter.html" class="intro-button">Read Now</a>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var introContainer = document.querySelector('.intro-container');
+    introContainer.classList.add('show');
+  });
+</script>
+
+</body>
+</html>
