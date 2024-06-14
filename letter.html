@@ -178,32 +178,33 @@
     bottom: 10px;
     right: 10px;
   }
-  @media (max-width: 768px) {
-    body {
-      padding: 20px;
-    }
-    .letter-container {
-      padding: 20px;
-      max-height: 70vh;
-    }
-    .letter-header {
-      font-size: 24px;
-    }
-    .typing-container {
-      font-size: 16px;
-    }
-    .action-button, .print-button, .dark-mode-button, .download-button {
-      padding: 10px 15px;
-      font-size: 16px;
-      margin-top: 5px;
-    }
-    #speedControl {
-      width:100px;
-    }
-    #speedIcon {
-      font-size: 10px;
-    }
+@media (max-width: 768px) {
+  body {
+    padding: 10px;
   }
+  .letter-container {
+    padding: 10px;
+    max-height: 60vh;
+  }
+  .letter-header {
+    font-size: 20px;
+  }
+  .typing-container {
+    font-size: 14px;
+  }
+  .action-button, .print-button, .dark-mode-button, .download-button {
+    padding: 8px 12px;
+    font-size: 14px;
+    margin-top: 5px;
+  }
+  #speedControl {
+    width: 80px;
+  }
+  #speedIcon {
+    font-size: 8px;
+  }
+}
+
 
   /* CSS for the range input */
   input[type="range"] {
@@ -485,18 +486,7 @@ p.y = -10;
 setInterval(draw, 20);
 }
 
-function printLetter() {
-window.print();
-}
 
-function downloadPDF() {
-const element = document.getElementById('letterContainer');
-html2pdf().from(element).save('ClosureLetter.pdf');
-}
-
-function toggleDarkMode() {
-document.body.classList.toggle('dark-mode');
-}
 
 window.onload = function() {
 typeLetter();
@@ -629,6 +619,53 @@ function prevTrack(){
         playTrack();
     }
 }
+  document.addEventListener('DOMContentLoaded', function() {
+  const canvas = document.getElementById('canvas');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  const ctx = canvas.getContext('2d');
+  const hearts = [];
+   function drawHeart(x, y, size) {
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.bezierCurveTo(size / 2, -size / 2, size, size / 3, 0, size);
+    ctx.moveTo(0, 0);
+    ctx.bezierCurveTo(-size / 2, -size / 2, -size, size / 3, 0, size);
+    ctx.fillStyle = 'rgba(255, 105, 180, 0.5)';
+    ctx.fill();
+    ctx.restore();
+  }
+
+  function updateHearts() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    for (let i = 0; i < hearts.length; i++) {
+      const heart = hearts[i];
+      heart.y += 1;
+      drawHeart(heart.x, heart.y, heart.size);
+      if (heart.y > canvas.height) {
+        hearts.splice(i, 1);
+        i--;
+      }
+    }
+  }
+
+  function createHeart() {
+    const x = Math.random() * canvas.width;
+    const y = -20;
+    const size = Math.random() * 20 + 10;
+    hearts.push({ x, y, size });
+  }
+
+  function animate() {
+    updateHearts();
+    requestAnimationFrame(animate);
+  }
+
+  setInterval(createHeart, 500);
+  animate();
+});
 
 </script>
 
